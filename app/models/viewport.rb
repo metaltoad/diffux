@@ -17,10 +17,10 @@ class Viewport < ActiveRecord::Base
   #   wider widths, this will be shorter, as if in landscape orientation on a
   #   laptop or desktop monitor.
   def height
-    if width < 960
-      width * 2
+    if width.to_i < 960
+      width.to_i * 2
     else
-      (width * 0.75).round # 16:12
+      (width.to_i * 0.75).round # 16:12
     end
   end
 end

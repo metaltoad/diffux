@@ -7,7 +7,7 @@ gem 'diff-lcs'
 gem 'haml-rails'
 gem 'oily_png' # faster chunky_png
 gem 'paperclip'
-gem 'pg'
+gem 'mysql'
 gem 'phantomjs'
 gem 'sidekiq'
 gem 'turbolinks'
