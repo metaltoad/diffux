@@ -1,15 +1,13 @@
-- provide :title, 'New Sweep'
+- provide :title, t('.title')
 
 = render 'shared/breadcrumbs',
   crumbs: [[@project.name, @project],
-           ['Sweeps', project_sweeps_path(@project)],
-           ['New configuration']]
+           [Sweep.model_name.human(count: 2), project_sweeps_path(@project)],
+           [t(:new_configuration)]]
 
 .page-header
   %h1= yield :title
-  %p.help
-    Creating a Sweep triggers new snapshots to be created for all Urls in the
-    project.
+  %p.help= t('.intro')
 
 = render 'sweeps/protip_curl'
 

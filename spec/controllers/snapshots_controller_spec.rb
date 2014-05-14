@@ -10,6 +10,7 @@ describe SnapshotsController do
     it         { should be_success }
     its(:body) { should have_css('.snapshot-accept-button') }
     its(:body) { should have_css('.snapshot-reject-button') }
+    its(:body) { should_not have_link('View debug log') }
 
     context 'with a snapshot in pending state' do
       let(:snapshot) { create(:snapshot, :pending) }
@@ -35,6 +36,12 @@ describe SnapshotsController do
       its(:body) { should have_css('.snapshot-accept-button') }
       its(:body) { should have_css('.snapshot-reject-button') }
     end
+
+    context 'with a log' do
+      before { snapshot.update_attributes log: 'a log' }
+
+      its(:body) { should have_link 'View debug log' }
+    end
   end
 
   describe '#create' do
@@ -46,8 +53,8 @@ describe SnapshotsController do
         # Since we're not actually taking snapshots, we need to fake the image.
         snapshot.image = File.open("#{Rails.root}/spec/sample_snapshot.png")
       end
-      Snapshotter.any_instance.stubs(:save_file_to_snapshot).with(&prc)
-      SnapshotComparer.any_instance.stubs(:compare!).returns(
+      SnapshotterWorker.any_instance.stubs(:save_file_to_snapshot).with(&prc)
+      Diffux::SnapshotComparer.any_instance.stubs(:compare!).returns(
         diff_image:      ChunkyPNG::Image.new(10, 10, ChunkyPNG::Color::WHITE),
         diff_in_percent: 0.001,
         diff_clusters:   diff_clusters,
@@ -64,14 +71,14 @@ describe SnapshotsController do
       expect { subject }.to change { Snapshot.count }.by(1)
     end
 
-    it 'saves the diff', :uses_after_commit do
+    it 'saves the diff', :without_transactional_fixtures do
       subject
       diff = Snapshot.unscoped.last.snapshot_diff
       diff.diff_in_percent.should == 0.001
       diff.before_snapshot.should == baseline
     end
 
-    it 'saves the diff cluster', :uses_after_commit do
+    it 'saves the diff cluster', :without_transactional_fixtures do
       subject
       diff = Snapshot.unscoped.last.snapshot_diff
       diff.snapshot_diff_clusters.count.should == 1
@@ -79,7 +86,7 @@ describe SnapshotsController do
         diff_clusters.first[:start]
     end
 
-    it 'captures the snapshot title', :uses_after_commit do
+    it 'captures the snapshot title', :without_transactional_fixtures do
       subject
       snapshot = Snapshot.unscoped.last
       snapshot.title.should_not be_nil
@@ -155,7 +162,19 @@ describe SnapshotsController do
     end
   end
 
-  describe '#take_snapshot', :uses_after_commit  do
+  describe '#view_log' do
+    let(:log)      { 'a log' }
+    let(:snapshot) { create :snapshot, log: log }
+    subject        { get :view_log, id: snapshot.to_param }
+    its(:body)     { should have_content log }
+
+    context 'with no log saved for the snapshot' do
+      let(:log)  { nil }
+      its(:body) { should have_css '.alert.alert-warning' }
+    end
+  end
+
+  describe '#take_snapshot', :without_transactional_fixtures  do
     let!(:snapshot) { create(:snapshot, :with_baseline, :with_diff) }
 
     before { SnapshotterWorker.stubs(:perform_async) }
@@ -204,11 +223,11 @@ describe SnapshotsController do
       response
     end
 
-    it 'sets the snapshot in pending state', :uses_after_commit do
+    it 'sets the snapshot in pending state', :without_transactional_fixtures do
       expect { subject }.to change { snapshot.reload.pending? }.to(true)
     end
 
-    it 'triggers a worker', :uses_after_commit do
+    it 'triggers a worker', :without_transactional_fixtures do
       SnapshotComparerWorker.expects(:perform_async).once
       subject
     end

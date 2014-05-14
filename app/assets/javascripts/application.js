@@ -11,11 +11,12 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY
 // BLANK LINE SHOULD GO AFTER THE REQUIRES BELOW.
 //
-//= require jquery/jquery
+//= require jquery/dist/jquery
 //= require jquery-ujs/src/rails
 //= require jquery.visible/jquery.visible
 //= require turbolinks
 //= require replacejs/replace
+//= require _phantomJS-configs
 //= require _loading-indicator
 //= require _snapshot-tab-navigation
 //= require _keyboard-shortcuts

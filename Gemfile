@@ -1,15 +1,20 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.0'
+gem 'rails', '4.1.1'
 
 gem 'bootstrap-sass', '~> 3.1.0'
-gem 'diff-lcs'
+gem 'diffux-core'
 gem 'haml-rails'
-gem 'oily_png' # faster chunky_png
 gem 'paperclip'
+<<<<<<< HEAD
 gem 'mysql'
 gem 'phantomjs'
+=======
+gem 'pg'
+gem 'rails-i18n', '~> 4.0.0'
+>>>>>>> 74eb02debb4c45259d84eeba99e560f8f75d7990
 gem 'sidekiq'
+gem 'sinatra', '>= 1.3.0', require: nil # for sidekiq
 gem 'turbolinks'
 
 group :assets do
@@ -27,6 +32,7 @@ group :test do
   gem 'mocha'
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'poltergeist'
 end
 
 group :development do

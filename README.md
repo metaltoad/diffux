@@ -1,10 +1,10 @@
-# [![Diffux](https://raw.github.com/trotzig/diffux/master/app/assets/images/diffux.png)](https://github.com/trotzig/diffux/tree/master/app/assets/images)
+# [![Diffux](https://raw.github.com/diffux/diffux/master/app/assets/images/diffux.png)](https://github.com/diffux/diffux/tree/master/app/assets/images)
 
 
-[![Build Status](https://travis-ci.org/trotzig/diffux.png)](https://travis-ci.org/trotzig/diffux)
-[![Code Climate](https://codeclimate.com/github/trotzig/diffux.png)](https://codeclimate.com/github/trotzig/diffux)
-[![Coverage Status](https://coveralls.io/repos/trotzig/diffux/badge.png?branch=master)](https://coveralls.io/r/trotzig/diffux)
-[![Dependency Status](https://gemnasium.com/trotzig/diffux.png)](https://gemnasium.com/trotzig/diffux)
+[![Build Status](https://travis-ci.org/diffux/diffux.png)](https://travis-ci.org/diffux/diffux)
+[![Code Climate](https://codeclimate.com/github/diffux/diffux.png)](https://codeclimate.com/github/diffux/diffux)
+[![Coverage Status](https://coveralls.io/repos/diffux/diffux/badge.png?branch=master)](https://coveralls.io/r/diffux/diffux)
+[![Dependency Status](https://gemnasium.com/diffux/diffux.svg)](https://gemnasium.com/diffux/diffux)
 
 
 Are you worried that your CSS changes will break the current design in
@@ -22,10 +22,14 @@ modifications.
 
 Diffux requires:
 
-- ImageMagick
-- PostgreSQL
 - Redis
 - Ruby 2.0.0+
+- ImageMagick (only as part of generating thumbnails, not for creating the
+  diffs)
+
+Optional requirements:
+
+- PostgreSQL (SQLite is used by default)
 
 ### Mac OS X (Using Homebrew)
 
@@ -34,25 +38,24 @@ up and running on Mac OS X using Homebrew.
 
 ```bash
 # clone repo
-git clone https://github.com/trotzig/diffux.git
+git clone https://github.com/diffux/diffux.git
 cd diffux
 
 # install dependencies
 brew update
 brew doctor
-brew install imagemagick postgresql redis
+brew install imagemagick redis
+
+# optionally install and start PostgreSQL (you can leave this step out if you
+# are ok with using SQLite)
+brew install postgresql
+pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
 
 # install gems
 bundle install
 
-# start postgres
-pg_ctl -D /usr/local/var/postgres -l /usr/local/var/postgres/server.log start
-
 # start redis
 redis-server
-
-# create tables, load the schema, and run migrations
-bundle exec rake db:setup
 ```
 
 ## Initialize database configuration
@@ -63,6 +66,13 @@ your database setup. This is done by copying `config/database.yml.example` to
 
 ```bash
   cp config/database.yml.example config/database.yml
+```
+
+When you are done with that, it's time to setup the database schema.
+
+```bash
+# create tables, load the schema, and run migrations
+bundle exec rake db:setup
 ```
 
 ## Running the server
@@ -99,7 +109,7 @@ Follow these steps:
 
 ```bash
 # clone repo
-git clone https://github.com/trotzig/diffux.git
+git clone https://github.com/diffux/diffux.git
 cd diffux
 
 # create and configure the heroku application
@@ -148,17 +158,17 @@ curl --header "Accept: application/json" \
 
 More about the JSON data:
 
-| key             | required | description
-| --------------- | -------- | -----------
-| `title`         | Yes      | A name/short description of the sweep, e.g. the name of the release/deploy.
-| `description`   | No       | A longer description, e.g. the full release notes.
-| `delay_seconds` | No       | Number of seconds to delay the sweep with. This could be useful if you have an async release process.
-| `email`         | No       | An email address to send a message to when the sweep is ready (all snapshots taken and compared).
+key             | required | description
+--------------- | -------- | -----------
+`title`         | Yes      | A name/short description of the sweep, e.g. the name of the release/deploy.
+`description`   | No       | A longer description, e.g. the full release notes.
+`delay_seconds` | No       | Number of seconds to delay the sweep with. This could be useful if you have an async release process.
+`email`         | No       | An email address to send a message to when the sweep is ready (all snapshots taken and compared).
 
 ## License
 
 Released under the MIT License.
 
-[Documentation]: http://rubydoc.info/github/trotzig/diffux/master/frames
+[Documentation]: http://rubydoc.info/github/diffux/diffux
 [Rails]: http://rubyonrails.org/
 [Sidekiq]: http://sidekiq.org/

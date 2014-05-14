@@ -1,0 +1,7 @@
+- if @snapshot.log
+  .alert.alert-info
+    = t('.info')
+  = simple_format @snapshot.log
+- else
+  .alert.alert-warning
+    = t('.no_log_html')

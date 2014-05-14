@@ -11,16 +11,16 @@ module SweepsHelper
   # @return [String] a short textual representation of the status of a sweep
   def sweep_status(sweep)
     if sweep.count_pending > 0
-      pluralize(sweep.count_pending, 'pending snapshot')
+      t(:snapshots_pending, count: sweep.count_pending)
     elsif sweep.count_under_review > 0
-      "#{pluralize(sweep.count_under_review, 'snapshot')} under review"
+      t(:snapshots_under_review, count: sweep.count_under_review)
     elsif sweep.count_rejected > 0
-
-      "#{sweep.count_accepted} accepted, #{sweep.count_rejected} rejected"
+      t(:snapshots_accepted_rejected,
+        accepted: sweep.count_accepted, rejected: sweep.count_rejected)
     elsif sweep.count_accepted > 0
-      'All accepted'
+      t(:snapshots_all_accepted)
     else
-      'Unknown'
+      t(:unknown)
     end
   end
 
@@ -45,7 +45,8 @@ module SweepsHelper
     content_tag(:div, html_attrs) do
       PROGRESS_BAR_STYLE_MAPPINGS.map do |state, bootstrap_class|
         percent = number_to_percentage(
-                    sweep.send("count_#{state}") / total_count.to_f * 100)
+                    sweep.send("count_#{state}") / total_count.to_f * 100,
+                    locale: 'en')
         content_tag(:div, nil, class: "progress-bar #{bootstrap_class}",
                                style: "width: #{percent}")
       end.join.html_safe
