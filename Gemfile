@@ -6,13 +6,10 @@ gem 'bootstrap-sass', '~> 3.1.0'
 gem 'diffux-core'
 gem 'haml-rails'
 gem 'paperclip'
-<<<<<<< HEAD
 gem 'mysql'
 gem 'phantomjs'
-=======
-gem 'pg'
+#gem 'pg'
 gem 'rails-i18n', '~> 4.0.0'
->>>>>>> 74eb02debb4c45259d84eeba99e560f8f75d7990
 gem 'sidekiq'
 gem 'sinatra', '>= 1.3.0', require: nil # for sidekiq
 gem 'turbolinks'
